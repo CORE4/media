@@ -30,27 +30,14 @@ class CropImageAdjustment extends AbstractImageAdjustment
     protected $position = 10;
 
     /**
-     * @var integer
-     * @ORM\Column(nullable = TRUE)
+     * @var array
      */
-    protected $x;
-
-    /**
-     * @var integer
-     * @ORM\Column(nullable = TRUE)
-     */
-    protected $y;
-    /**
-     * @var integer
-     * @ORM\Column(nullable = TRUE)
-     */
-    protected $width;
-
-    /**
-     * @var integer
-     * @ORM\Column(nullable = TRUE)
-     */
-    protected $height;
+    protected $configuration = [
+        'height' => null,
+        'width' => null,
+        'x' => null,
+        'y' => null
+    ];
 
     /**
      * Sets height
@@ -61,7 +48,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function setHeight($height)
     {
-        $this->height = $height;
+        $this->setConfigurationValue('height', $height);
     }
 
     /**
@@ -72,7 +59,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function getHeight()
     {
-        return $this->height;
+        return $this->getConfigurationValue('height');
     }
 
     /**
@@ -84,7 +71,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function setWidth($width)
     {
-        $this->width = $width;
+        $this->setConfigurationValue('width', $width);
     }
 
     /**
@@ -95,7 +82,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function getWidth()
     {
-        return $this->width;
+        return $this->getConfigurationValue('width');
     }
 
     /**
@@ -107,7 +94,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function setX($x)
     {
-        $this->x = $x;
+        $this->setConfigurationValue('x', $x);
     }
 
     /**
@@ -118,7 +105,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function getX()
     {
-        return $this->x;
+        return $this->getConfigurationValue('x');
     }
 
     /**
@@ -130,7 +117,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function setY($y)
     {
-        $this->y = $y;
+        $this->setConfigurationValue('y', $y);
     }
 
     /**
@@ -141,7 +128,7 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function getY()
     {
-        return $this->y;
+        return $this->getConfigurationValue('y');
     }
 
     /**
@@ -153,11 +140,11 @@ class CropImageAdjustment extends AbstractImageAdjustment
     public function canBeApplied(ImagineImageInterface $image)
     {
         if (
-            $this->x === 0 &&
-            $this->y === 0 &&
-            $image->getSize()->getWidth() === $this->width &&
-            $image->getSize()->getHeight() === $this->height
-            ) {
+            $this->getX() === 0 &&
+            $this->getY() === 0 &&
+            $image->getSize()->getWidth() === $this->getWidth() &&
+            $image->getSize()->getHeight() === $this->getHeight()
+        ) {
             return false;
         }
 
@@ -173,8 +160,8 @@ class CropImageAdjustment extends AbstractImageAdjustment
      */
     public function applyToImage(ImagineImageInterface $image)
     {
-        $point = new Point($this->x, $this->y);
-        $box = new Box($this->width, $this->height);
+        $point = new Point($this->getX(), $this->getY());
+        $box = new Box($this->getWidth(), $this->getHeight());
         return $image->crop($point, $box);
     }
 }
